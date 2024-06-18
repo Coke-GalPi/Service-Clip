@@ -55,7 +55,7 @@ async def process_image(file: UploadFile = File(...)):
         result = {}
         if values100[0].item() >= 0.9:
             result = {"prediction": templates100[indices100[0].item()]}
-        elif values100[0].item() < 0.9 and values100[0].item() >= 0.75:
+        elif values100[0].item() < 0.9 and values100[0].item() >= 0.5:
             result = {"prediction": {classes100[idx]: f"{100 * val.item():.2f}%" for val, idx in zip(values100, indices100)}}
         else:
             result = {"prediction": "Cannot be predicted."}
