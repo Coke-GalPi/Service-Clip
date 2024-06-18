@@ -18,7 +18,7 @@
                     <h1>Predecir imagen</h1>
                 </div>
                 <div class="card-body">
-                    <form action="/process_image" method="post" enctype="multipart/form-data">
+                    <form id="upload-form" action="/process_image" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="file" class="form-label">Seleccionar imagen</label>
                             <input class="form-control" type="file" name="file" id="file" />
@@ -34,7 +34,7 @@
             </div>
         </div>
         <script>
-            const form = document.querySelector('form');
+            const form = document.getElementById('upload-form');
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
                 const fileInput = document.querySelector('input[type="file"]');
@@ -43,7 +43,18 @@
                 const response = await fetch('/process_image', {method: 'POST', body: formData});
                 const result = await response.json();
                 const predictionDiv = document.getElementById('prediction');
-                predictionDiv.textContent = result.prediction;
+                
+                // Clear previous prediction
+                predictionDiv.textContent = '';
+
+                // Check if the prediction is an object with multiple results
+                if (typeof result.prediction === 'object') {
+                    for (const [key, value] of Object.entries(result.prediction)) {
+                        predictionDiv.innerHTML += `${key}: ${value}<br>`;
+                    }
+                } else {
+                    predictionDiv.textContent = result.prediction;
+                }
             });
         </script>
         <script>
